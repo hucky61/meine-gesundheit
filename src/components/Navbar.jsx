@@ -1,53 +1,85 @@
-import React from 'react';
-import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus, Menu, X } from 'lucide-react';
 
 export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, onOpenModal }) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const handleTabClick = (tab) => {
+        onTabChange(tab);
+        setIsMobileMenuOpen(false);
+    };
+
+    const handleOpenModalClick = () => {
+        onOpenModal();
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <header className="navbar">
-            <div className="nav-brand">
-                <div className="brand-icon">
-                    <Activity className="brand-logo-icon" />
+            <div className="nav-header-top">
+                <div className="nav-brand">
+                    <div className="brand-icon">
+                        <Activity className="brand-logo-icon" />
+                    </div>
+                    <div className="brand-info">
+                        <h1>HealthSync</h1>
+                        <p>Deine Gesundheit im Blick</p>
+                    </div>
                 </div>
-                <div className="brand-info">
-                    <h1>HealthSync</h1>
-                    <p>Deine Gesundheit im Blick</p>
+
+                <div className="nav-actions-mobile">
+                    <button
+                        className="btn-icon theme-toggle-btn"
+                        onClick={onToggleTheme}
+                        title="Design umschalten"
+                    >
+                        {theme === 'light' ? <Sun size={18} /> : <Moon size={18} />}
+                    </button>
+                    <button
+                        className="btn-icon btn-menu-toggle"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Menü umschalten"
+                        title="Menü umschalten"
+                    >
+                        {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                 </div>
             </div>
 
-            <nav className="nav-menu">
+            <nav className={`nav-menu ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                 <button
                     className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
-                    onClick={() => onTabChange('dashboard')}
+                    onClick={() => handleTabClick('dashboard')}
                 >
                     <LayoutDashboard size={18} />
                     <span>Übersicht</span>
                 </button>
                 <button
                     className={`nav-link ${activeTab === 'history' ? 'active' : ''}`}
-                    onClick={() => onTabChange('history')}
+                    onClick={() => handleTabClick('history')}
                 >
                     <Calendar size={18} />
                     <span>Verlauf</span>
                 </button>
                 <button
                     className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`}
-                    onClick={() => onTabChange('settings')}
+                    onClick={() => handleTabClick('settings')}
                 >
                     <Settings size={18} />
                     <span>Einstellungen</span>
                 </button>
             </nav>
 
-            <div className="nav-actions">
+            <div className={`nav-actions ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                 <button
                     id="theme-toggle"
-                    className="btn-icon"
+                    className="btn-icon theme-toggle-desktop"
                     onClick={onToggleTheme}
                     title="Design umschalten"
                 >
                     {theme === 'light' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
-                <button className="btn-primary" onClick={() => onOpenModal()}>
+                <button className="btn-primary" onClick={handleOpenModalClick}>
                     <Plus size={18} />
                     <span>Neuer Eintrag</span>
                 </button>
