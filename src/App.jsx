@@ -16,7 +16,7 @@ import {
 
 export default function App() {
     const [records, setRecords] = useState([]);
-    const [settings, setSettings] = useState({ height: 178 });
+    const [settings, setSettings] = useState({ height: 178, name: '' });
     const [activeTab, setActiveTab] = useState('dashboard');
     const [theme, setTheme] = useState('dark');
     const [isModalOpen, setIsModalOpen] = useState(false);

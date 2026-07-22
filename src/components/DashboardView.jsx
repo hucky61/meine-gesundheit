@@ -214,7 +214,7 @@ export default function DashboardView({ records, settings, onSelectTab }) {
 
             {/* Print Only Header Banner */}
             <div className="print-only print-header">
-                <h1>HealthSync Arztbericht</h1>
+                <h1>HealthSync Arztbericht {settings.name ? `für ${settings.name}` : ''}</h1>
                 <p>Erstellt am: {new Date().toLocaleDateString('de-DE')} | Analysezeitraum: {timeRange === 'all' ? 'Alle Messungen' : `Letzte ${timeRange} Tage`}</p>
                 {settings.height && <p>Körpergröße: {settings.height} cm</p>}
             </div>

@@ -4,10 +4,12 @@ import { downloadFile } from '../utils/storage';
 
 export default function SettingsView({ records, settings, onSaveSettings, onImportJSON, onClearData, showToast }) {
     const [height, setHeight] = useState(settings.height || '');
+    const [name, setName] = useState(settings.name || '');
     const jsonInputRef = useRef(null);
 
     useEffect(() => {
         setHeight(settings.height || '');
+        setName(settings.name || '');
     }, [settings]);
 
     const handleSaveProfile = (e) => {
@@ -17,7 +19,7 @@ export default function SettingsView({ records, settings, onSaveSettings, onImpo
             showToast('Bitte trage eine realistische Körpergröße ein (100 - 250 cm).', 'error');
             return;
         }
-        onSaveSettings({ ...settings, height: heightNum });
+        onSaveSettings({ ...settings, height: heightNum, name: name.trim() });
         showToast('Profil erfolgreich gespeichert.', 'success');
     };
 
@@ -64,9 +66,21 @@ export default function SettingsView({ records, settings, onSaveSettings, onImpo
                 <div className="card settings-card">
                     <div className="settings-card-header">
                         <h3><User size={20} /> Benutzerprofil</h3>
-                        <p>Informationen zur BMI-Berechnung</p>
+                        <p>Persönliche Daten und Einstellungen</p>
                     </div>
                     <form className="settings-card-body" onSubmit={handleSaveProfile}>
+                        <div className="form-group">
+                            <label htmlFor="setting-name">Name / Benutzername</label>
+                            <input
+                                type="text"
+                                id="setting-name"
+                                className="text-input"
+                                placeholder="Z.B. Max Mustermann"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            <p className="form-help">Wird auf dem Arztbericht (PDF) ausgegeben.</p>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="setting-height">Größe (cm)</label>
                             <input

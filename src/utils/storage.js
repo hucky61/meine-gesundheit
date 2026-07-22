@@ -22,11 +22,12 @@ export function saveRecords(records) {
 
 export function loadSettings() {
     const saved = localStorage.getItem(SETTINGS_KEY);
-    if (!saved) return { height: 178 };
+    if (!saved) return { height: 178, name: '' };
     try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return { height: 178, name: '', ...parsed };
     } catch (e) {
-        return { height: 178 };
+        return { height: 178, name: '' };
     }
 }
 
