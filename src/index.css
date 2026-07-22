@@ -343,7 +343,12 @@ button {
 }
 
 .tab-view {
+    display: none;
     animation: fadeIn var(--transition-normal);
+}
+
+.tab-view.active {
+    display: block;
 }
 
 @keyframes fadeIn {
