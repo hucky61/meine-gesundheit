@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus, Menu, X } from 'lucide-react';
+import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus, Menu, X, Printer } from 'lucide-react';
 
 export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, onOpenModal }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,7 +15,7 @@ export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, o
     };
 
     return (
-        <header className="navbar">
+        <header className="navbar animate-fade-in">
             <div className="nav-header-top">
                 <div className="nav-brand">
                     <div className="brand-icon">
@@ -78,6 +78,10 @@ export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, o
                     title="Design umschalten"
                 >
                     {theme === 'light' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button className="btn-secondary no-print" onClick={() => { setIsMobileMenuOpen(false); window.print(); }} title="Arztbericht drucken">
+                    <Printer size={18} />
+                    <span>Arztbericht (PDF)</span>
                 </button>
                 <button className="btn-primary" onClick={handleOpenModalClick}>
                     <Plus size={18} />

@@ -196,25 +196,19 @@ export default function DashboardView({ records, settings, onSelectTab }) {
         <section id="dashboard" className="tab-view active">
             <div className="view-header">
                 <h2>Übersicht</h2>
-                <div className="header-actions-group">
-                    <button className="btn-secondary print-button no-print" onClick={() => window.print()} title="Arztbericht drucken">
-                        <Printer size={18} />
-                        <span>Arztbericht (PDF)</span>
-                    </button>
-                    <div className="filter-group no-print">
-                        <label htmlFor="time-range-select">Zeitraum:</label>
-                        <select
-                            id="time-range-select"
-                            className="select-input"
-                            value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value)}
-                        >
-                            <option value="7">Letzte 7 Tage</option>
-                            <option value="30">Letzte 30 Tage</option>
-                            <option value="90">Letzte 90 Tage</option>
-                            <option value="all">Alle Einträge</option>
-                        </select>
-                    </div>
+                <div className="filter-group no-print">
+                    <label htmlFor="time-range-select">Zeitraum:</label>
+                    <select
+                        id="time-range-select"
+                        className="select-input"
+                        value={timeRange}
+                        onChange={(e) => setTimeRange(e.target.value)}
+                    >
+                        <option value="7">Letzte 7 Tage</option>
+                        <option value="30">Letzte 30 Tage</option>
+                        <option value="90">Letzte 90 Tage</option>
+                        <option value="all">Alle Einträge</option>
+                    </select>
                 </div>
             </div>
 
