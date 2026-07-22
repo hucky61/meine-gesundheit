@@ -1,6 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Search, Download, Upload, Edit3, Trash2, DatabaseBackup } from 'lucide-react';
-import { formatDate, getBPClassification, calculateBMI } from '../utils/health';
+import {
+    formatDate,
+    getBPClassification,
+    calculateBMI,
+    calculatePulsdruck,
+    calculateMAP
+} from '../utils/health';
 import { generateCSV, parseCSV, downloadFile } from '../utils/storage';
 
 export default function HistoryView({ records, settings, onEditRecord, onDeleteRecord, onImportRecords, showToast }) {
@@ -43,7 +49,7 @@ export default function HistoryView({ records, settings, onEditRecord, onDeleteR
         <section id="history" className="tab-view active">
             <div className="view-header">
                 <h2>Messwert-Verlauf</h2>
-                <div className="history-actions">
+                <div className="history-actions no-print">
                     <div className="search-box">
                         <Search className="search-icon" size={16} />
                         <input
@@ -88,7 +94,7 @@ export default function HistoryView({ records, settings, onEditRecord, onDeleteR
                                     <th>Gewicht (kg)</th>
                                     <th>BMI</th>
                                     <th>Notizen</th>
-                                    <th>Aktionen</th>
+                                    <th className="no-print">Aktionen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,19 +104,31 @@ export default function HistoryView({ records, settings, onEditRecord, onDeleteR
 
                                     return (
                                         <tr key={r.id}>
-                                            <td><strong>{formatDate(r.datetime)}</strong></td>
+                                            <td>
+                                                <strong>{formatDate(r.datetime)}</strong>
+                                                {r.tag && (
+                                                    <span className={`tag-badge tag-${r.tag}`} style={{ display: 'block', marginTop: '0.25rem', width: 'fit-content' }}>
+                                                        {r.tag.toUpperCase()}
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>
                                                 {r.systolic && r.diastolic ? (
-                                                    <span className={`table-val-pill ${bpClass ? bpClass.class : ''}`}>
-                                                        {r.systolic} / {r.diastolic}
-                                                    </span>
+                                                    <div>
+                                                        <span className={`table-val-pill ${bpClass ? bpClass.class : ''}`}>
+                                                            {r.systolic} / {r.diastolic}
+                                                        </span>
+                                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                                                            PP: {calculatePulsdruck(r.systolic, r.diastolic)} | MAP: {calculateMAP(r.systolic, r.diastolic)}
+                                                        </div>
+                                                    </div>
                                                 ) : '--'}
                                             </td>
                                             <td>{r.pulse || '--'}</td>
                                             <td>{r.weight ? r.weight.toFixed(1) : '--'}</td>
                                             <td><small className="kpi-badge">{bmi || '--'}</small></td>
                                             <td className="notes-cell" title={r.notes || ''}>{r.notes || ''}</td>
-                                            <td className="table-actions">
+                                            <td className="table-actions no-print">
                                                 <button
                                                     className="btn-table-action edit"
                                                     onClick={() => onEditRecord(r)}

@@ -1275,3 +1275,212 @@ tr:hover td {
     }
 }
 
+/* Tag Badges */
+.tag-badge {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: fit-content;
+}
+
+.tag-morgens {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+}
+
+.tag-abends {
+    background-color: rgba(168, 85, 247, 0.12);
+    color: #a855f7;
+}
+
+.tag-ruhe {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.tag-sport {
+    background-color: rgba(14, 165, 233, 0.12);
+    color: #0284c7;
+}
+
+.tag-medikamente {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.tag-stress {
+    background-color: rgba(249, 115, 22, 0.12);
+    color: #f97316;
+}
+
+/* Print Media Styles */
+.print-only {
+    display: none;
+}
+
+@media print {
+    .no-print,
+    .navbar,
+    .history-actions,
+    .nav-actions-mobile,
+    .btn-menu-toggle,
+    .modal-overlay,
+    .toast-container,
+    .table-actions,
+    .header-actions-group,
+    th:last-child,
+    td:last-child {
+        display: none !important;
+    }
+
+    body {
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 10pt;
+        font-family: var(--font-sans);
+        margin: 0;
+        padding: 0;
+    }
+
+    .app-layout {
+        display: block !important;
+        min-height: unset !important;
+        overflow: visible !important;
+    }
+
+    .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .tab-view {
+        display: block !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .card {
+        border: 1px solid #e2e8f0 !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+        color: #000000 !important;
+        padding: 12pt !important;
+        margin-bottom: 12pt !important;
+        page-break-inside: avoid;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .print-header {
+        margin-bottom: 20pt;
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 8pt;
+    }
+
+    .print-header h1 {
+        font-size: 20pt;
+        color: #0f172a;
+        margin-bottom: 4pt;
+    }
+
+    .print-header p {
+        font-size: 9pt;
+        color: #475569;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8pt !important;
+        margin-bottom: 15pt !important;
+    }
+
+    .kpi-card {
+        padding: 8pt !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    .kpi-card::after {
+        display: none !important;
+    }
+
+    .kpi-value {
+        font-size: 1.35rem !important;
+    }
+
+    .kpi-badge {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .table-val-pill {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 0.1rem 0.3rem !important;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10pt !important;
+        margin-bottom: 15pt !important;
+        page-break-inside: avoid;
+    }
+
+    .chart-card {
+        padding: 8pt !important;
+    }
+
+    .chart-wrapper {
+        height: 200px !important;
+    }
+
+    .dashboard-footer-grid {
+        grid-template-columns: 1fr 1.2fr !important;
+        gap: 10pt !important;
+        page-break-inside: avoid;
+    }
+
+    .tag-badge {
+        border: 1px solid #cbd5e1 !important;
+        background-color: #f8fafc !important;
+        color: #000000 !important;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 8.5pt !important;
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+    }
+
+    th {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+        padding: 6pt !important;
+    }
+
+    td {
+        padding: 6pt !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+}
+
+
