@@ -8,6 +8,7 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
     const [pulse, setPulse] = useState('');
     const [weight, setWeight] = useState('');
     const [notes, setNotes] = useState('');
+    const [tag, setTag] = useState('');
 
     useEffect(() => {
         if (isOpen) {
@@ -18,6 +19,7 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
                 setPulse(initialData.pulse !== null && initialData.pulse !== undefined ? initialData.pulse : '');
                 setWeight(initialData.weight !== null && initialData.weight !== undefined ? initialData.weight : '');
                 setNotes(initialData.notes || '');
+                setTag(initialData.tag || '');
             } else {
                 setDatetime(getCurrentLocalISO());
                 setSystolic('');
@@ -25,6 +27,7 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
                 setPulse('');
                 setWeight('');
                 setNotes('');
+                setTag('');
             }
         }
     }, [isOpen, initialData]);
@@ -62,7 +65,8 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
             diastolic: diaNum,
             pulse: pulseNum,
             weight: weightNum,
-            notes: notes.trim()
+            notes: notes.trim(),
+            tag
         });
     };
 
@@ -76,7 +80,7 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
                     </button>
                 </div>
                 <form className="modal-form" onSubmit={handleSubmit}>
-                    <div className="form-row">
+                    <div className="form-grid-2">
                         <div className="form-group">
                             <label htmlFor="input-datetime">Datum & Uhrzeit <span className="required">*</span></label>
                             <input
@@ -87,6 +91,24 @@ export default function RecordModal({ isOpen, initialData, onClose, onSave, show
                                 onChange={(e) => setDatetime(e.target.value)}
                                 required
                             />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="input-tag">Messkontext (Tag)</label>
+                            <select
+                                id="input-tag"
+                                className="select-input"
+                                value={tag}
+                                onChange={(e) => setTag(e.target.value)}
+                            >
+                                <option value="">Keiner</option>
+                                <option value="morgens">Morgens (M)</option>
+                                <option value="abends">Abends (A)</option>
+                                <option value="ruhe">Ruhe (R)</option>
+                                <option value="sport">Aktivität / Sport (S)</option>
+                                <option value="medikamente">Medikamente (Med)</option>
+                                <option value="stress">Stress (St)</option>
+                            </select>
+                            <p className="form-help">Optionale Messbedingung</p>
                         </div>
                     </div>
 

@@ -7,7 +7,10 @@ import {
     Clock,
     Activity,
     Info,
-    Inbox
+    Inbox,
+    Printer,
+    Sun,
+    Moon
 } from 'lucide-react';
 import {
     Chart as ChartJS,
@@ -27,7 +30,10 @@ import {
     calculateBMI,
     formatDate,
     formatShortDate,
-    filterRecordsByRange
+    filterRecordsByRange,
+    calculatePulsdruck,
+    calculateMAP,
+    getMorningEveningStats
 } from '../utils/health';
 
 ChartJS.register(
@@ -56,6 +62,11 @@ export default function DashboardView({ records, settings, onSelectTab }) {
     const bpClass = latestBP ? getBPClassification(latestBP.systolic, latestBP.diastolic) : null;
     const bmiVal = latestWeight && settings.height ? calculateBMI(latestWeight.weight, settings.height) : null;
     const bmiClass = bmiVal ? getBMIClassification(bmiVal) : null;
+
+    // Advanced medical analytics
+    const pulsdruck = latestBP ? calculatePulsdruck(latestBP.systolic, latestBP.diastolic) : null;
+    const mapVal = latestBP ? calculateMAP(latestBP.systolic, latestBP.diastolic) : null;
+    const meStats = getMorningEveningStats(filteredRecords);
 
     // Weight trend in selected time range
     const weightRecordsInRange = filteredRecords.filter(r => r.weight !== null && r.weight !== undefined);
@@ -185,20 +196,33 @@ export default function DashboardView({ records, settings, onSelectTab }) {
         <section id="dashboard" className="tab-view active">
             <div className="view-header">
                 <h2>Übersicht</h2>
-                <div className="filter-group">
-                    <label htmlFor="time-range-select">Zeitraum:</label>
-                    <select
-                        id="time-range-select"
-                        className="select-input"
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    >
-                        <option value="7">Letzte 7 Tage</option>
-                        <option value="30">Letzte 30 Tage</option>
-                        <option value="90">Letzte 90 Tage</option>
-                        <option value="all">Alle Einträge</option>
-                    </select>
+                <div className="header-actions-group">
+                    <button className="btn-secondary print-button no-print" onClick={() => window.print()} title="Arztbericht drucken">
+                        <Printer size={18} />
+                        <span>Arztbericht (PDF)</span>
+                    </button>
+                    <div className="filter-group no-print">
+                        <label htmlFor="time-range-select">Zeitraum:</label>
+                        <select
+                            id="time-range-select"
+                            className="select-input"
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                        >
+                            <option value="7">Letzte 7 Tage</option>
+                            <option value="30">Letzte 30 Tage</option>
+                            <option value="90">Letzte 90 Tage</option>
+                            <option value="all">Alle Einträge</option>
+                        </select>
+                    </div>
                 </div>
+            </div>
+
+            {/* Print Only Header Banner */}
+            <div className="print-only print-header">
+                <h1>HealthSync Arztbericht</h1>
+                <p>Erstellt am: {new Date().toLocaleDateString('de-DE')} | Analysezeitraum: {timeRange === 'all' ? 'Alle Messungen' : `Letzte ${timeRange} Tage`}</p>
+                {settings.height && <p>Körpergröße: {settings.height} cm</p>}
             </div>
 
             {/* KPI Metric Cards Grid */}
@@ -329,6 +353,64 @@ export default function DashboardView({ records, settings, onSelectTab }) {
 
             {/* Dashboard Footer Grid */}
             <div className="dashboard-footer-grid">
+                {/* Advanced Medical Analytics Card */}
+                <div className="card info-card">
+                    <div className="info-header">
+                        <h3><Activity className="info-icon" size={18} /> Medizinische Analysen</h3>
+                    </div>
+                    <div className="bp-class-guide">
+                        <div className="guide-row">
+                            <span className="guide-label">Pulsdruck (PP):</span>
+                            <span className="guide-values" style={{ fontFamily: 'Outfit' }}>
+                                {pulsdruck !== null ? `${pulsdruck} mmHg` : '--'}
+                            </span>
+                        </div>
+                        <p className="form-help" style={{ marginTop: '-0.3rem', marginBottom: '0.4rem', paddingLeft: '0.75rem' }}>
+                            Optimaler Bereich: 30 - 50 mmHg. Aktuell: {pulsdruck !== null ? (pulsdruck > 50 ? 'Erhöht' : pulsdruck < 30 ? 'Niedrig' : 'Normal') : '--'}
+                        </p>
+
+                        <div className="guide-row">
+                            <span className="guide-label">Mittl. Blutdruck (MAP):</span>
+                            <span className="guide-values" style={{ fontFamily: 'Outfit' }}>
+                                {mapVal !== null ? `${mapVal} mmHg` : '--'}
+                            </span>
+                        </div>
+                        <p className="form-help" style={{ marginTop: '-0.3rem', marginBottom: '0.4rem', paddingLeft: '0.75rem' }}>
+                            Normaler Bereich: 70 - 105 mmHg.
+                        </p>
+
+                        <div className="me-comparison" style={{ marginTop: '0.5rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem' }}>
+                            <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                Tageszeit-Mittelwerte (Ø)
+                            </h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                <div style={{ backgroundColor: 'var(--bg-primary)', padding: '0.5rem', borderRadius: 'var(--radius-md)' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', fontWeight: 700, color: '#f59e0b' }}>
+                                        <Sun size={12} /> Morgens
+                                    </span>
+                                    <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '0.15rem' }}>
+                                        {meStats.morning.avgSys ? `${meStats.morning.avgSys}/${meStats.morning.avgDia}` : '-- / --'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
+                                    </strong>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        Puls: {meStats.morning.avgPulse ? `${meStats.morning.avgPulse} bpm` : '--'}
+                                    </span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bg-primary)', padding: '0.5rem', borderRadius: 'var(--radius-md)' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', fontWeight: 700, color: '#a855f7' }}>
+                                        <Moon size={12} /> Abends
+                                    </span>
+                                    <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '0.15rem' }}>
+                                        {meStats.evening.avgSys ? `${meStats.evening.avgSys}/${meStats.evening.avgDia}` : '-- / --'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
+                                    </strong>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        Puls: {meStats.evening.avgPulse ? `${meStats.evening.avgPulse} bpm` : '--'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="card info-card">
                     <div className="info-header">
                         <h3><Info className="info-icon" size={18} /> Blutdruck-Klassifizierung</h3>

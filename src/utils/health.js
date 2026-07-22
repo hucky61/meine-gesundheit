@@ -70,3 +70,53 @@ export function filterRecordsByRange(records, rangeDays) {
         .filter(r => new Date(r.datetime) >= cutoffDate)
         .sort((a, b) => new Date(a.datetime) - new Date(b.datetime)); // Oldest first for charts
 }
+
+export function calculatePulsdruck(systolic, diastolic) {
+    if (!systolic || !diastolic) return null;
+    return systolic - diastolic;
+}
+
+export function calculateMAP(systolic, diastolic) {
+    if (!systolic || !diastolic) return null;
+    return parseFloat((diastolic + (systolic - diastolic) / 3).toFixed(1));
+}
+
+export function getMorningEveningStats(records) {
+    const morningRecords = [];
+    const eveningRecords = [];
+
+    records.forEach(r => {
+        if (!r.datetime) return;
+        const date = new Date(r.datetime);
+        const hour = date.getHours();
+
+        if (hour >= 4 && hour < 12) {
+            morningRecords.push(r);
+        } else if (hour >= 17 && hour <= 23) {
+            eveningRecords.push(r);
+        }
+    });
+
+    const getAverages = (recs) => {
+        const bpRecs = recs.filter(r => r.systolic !== null && r.diastolic !== null);
+        const pulseRecs = recs.filter(r => r.pulse !== null);
+
+        const avgSys = bpRecs.length > 0 ? Math.round(bpRecs.reduce((sum, r) => sum + r.systolic, 0) / bpRecs.length) : null;
+        const avgDia = bpRecs.length > 0 ? Math.round(bpRecs.reduce((sum, r) => sum + r.diastolic, 0) / bpRecs.length) : null;
+        const avgPulse = pulseRecs.length > 0 ? Math.round(pulseRecs.reduce((sum, r) => sum + r.pulse, 0) / pulseRecs.length) : null;
+
+        return {
+            avgSys,
+            avgDia,
+            avgPulse,
+            bpCount: bpRecs.length,
+            pulseCount: pulseRecs.length
+        };
+    };
+
+    return {
+        morning: getAverages(morningRecords),
+        evening: getAverages(eveningRecords)
+    };
+}
+
