@@ -47,7 +47,7 @@ ChartJS.register(
     Filler
 );
 
-export default function DashboardView({ records, settings, onSelectTab }) {
+export default function DashboardView({ records, settings, onSelectTab, active }) {
     const [timeRange, setTimeRange] = useState('30');
 
     // Filtered chronological records (oldest first for charts)
@@ -193,7 +193,7 @@ export default function DashboardView({ records, settings, onSelectTab }) {
     const recentRecords = records.slice(0, 3);
 
     return (
-        <section id="dashboard" className="tab-view active">
+        <section id="dashboard" className={`tab-view ${active ? 'active' : ''}`}>
             <div className="view-header">
                 <h2>Übersicht</h2>
                 <div className="filter-group no-print">

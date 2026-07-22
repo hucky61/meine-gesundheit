@@ -9,7 +9,7 @@ import {
 } from '../utils/health';
 import { generateCSV, parseCSV, downloadFile } from '../utils/storage';
 
-export default function HistoryView({ records, settings, onEditRecord, onDeleteRecord, onImportRecords, showToast }) {
+export default function HistoryView({ records, settings, onEditRecord, onDeleteRecord, onImportRecords, showToast, active }) {
     const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef(null);
 
@@ -46,7 +46,7 @@ export default function HistoryView({ records, settings, onEditRecord, onDeleteR
     };
 
     return (
-        <section id="history" className="tab-view active">
+        <section id="history" className={`tab-view ${active ? 'active' : ''}`}>
             <div className="view-header">
                 <h2>Messwert-Verlauf</h2>
                 <div className="history-actions no-print">

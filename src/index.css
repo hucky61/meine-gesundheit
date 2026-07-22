@@ -1333,7 +1333,8 @@ tr:hover td {
     .table-actions,
     .header-actions-group,
     th:last-child,
-    td:last-child {
+    td:last-child,
+    #settings {
         display: none !important;
     }
 

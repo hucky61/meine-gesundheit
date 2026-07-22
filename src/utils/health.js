@@ -40,6 +40,7 @@ export function calculateBMI(weight, heightCm) {
 export function formatDate(isoString) {
     if (!isoString) return '--';
     const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '--';
     return date.toLocaleString('de-DE', {
         day: '2-digit',
         month: '2-digit',
@@ -52,6 +53,7 @@ export function formatDate(isoString) {
 export function formatShortDate(isoString) {
     if (!isoString) return '--';
     const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '--';
     return date.toLocaleDateString('de-DE', {
         day: '2-digit',
         month: 'short',

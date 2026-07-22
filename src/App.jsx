@@ -153,35 +153,32 @@ export default function App() {
             />
 
             <main className="main-content">
-                {activeTab === 'dashboard' && (
-                    <DashboardView
-                        records={records}
-                        settings={settings}
-                        onSelectTab={setActiveTab}
-                    />
-                )}
+                <DashboardView
+                    records={records}
+                    settings={settings}
+                    onSelectTab={setActiveTab}
+                    active={activeTab === 'dashboard'}
+                />
 
-                {activeTab === 'history' && (
-                    <HistoryView
-                        records={records}
-                        settings={settings}
-                        onEditRecord={handleOpenModal}
-                        onDeleteRecord={handleDeleteRecord}
-                        onImportRecords={handleImportRecords}
-                        showToast={showToast}
-                    />
-                )}
+                <HistoryView
+                    records={records}
+                    settings={settings}
+                    onEditRecord={handleOpenModal}
+                    onDeleteRecord={handleDeleteRecord}
+                    onImportRecords={handleImportRecords}
+                    showToast={showToast}
+                    active={activeTab === 'history'}
+                />
 
-                {activeTab === 'settings' && (
-                    <SettingsView
-                        records={records}
-                        settings={settings}
-                        onSaveSettings={handleSaveSettings}
-                        onImportJSON={handleImportJSON}
-                        onClearData={handleClearData}
-                        showToast={showToast}
-                    />
-                )}
+                <SettingsView
+                    records={records}
+                    settings={settings}
+                    onSaveSettings={handleSaveSettings}
+                    onImportJSON={handleImportJSON}
+                    onClearData={handleClearData}
+                    showToast={showToast}
+                    active={activeTab === 'settings'}
+                />
             </main>
 
             <RecordModal

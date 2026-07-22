@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { User, Database, Download, Upload, Trash2 } from 'lucide-react';
 import { downloadFile } from '../utils/storage';
 
-export default function SettingsView({ records, settings, onSaveSettings, onImportJSON, onClearData, showToast }) {
+export default function SettingsView({ records, settings, onSaveSettings, onImportJSON, onClearData, showToast, active }) {
     const [height, setHeight] = useState(settings.height || '');
     const [name, setName] = useState(settings.name || '');
     const jsonInputRef = useRef(null);
@@ -56,7 +56,7 @@ export default function SettingsView({ records, settings, onSaveSettings, onImpo
     };
 
     return (
-        <section id="settings" className="tab-view active">
+        <section id="settings" className={`tab-view ${active ? 'active' : ''}`}>
             <div className="view-header">
                 <h2>Einstellungen</h2>
             </div>
