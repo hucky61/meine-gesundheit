@@ -13,6 +13,7 @@ import {
     loadTheme,
     saveTheme
 } from './utils/storage';
+import { generateEmailReport } from './utils/health';
 
 export default function App() {
     const [records, setRecords] = useState([]);
@@ -142,6 +143,17 @@ export default function App() {
         }
     };
 
+    const handleSendEmail = () => {
+        if (records.length === 0) {
+            showToast('Keine Daten zum Versenden vorhanden.', 'error');
+            return;
+        }
+        const { subject, body } = generateEmailReport(records, settings);
+        const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoUrl;
+        showToast('E-Mail-Entwurf wird geöffnet...', 'info');
+    };
+
     return (
         <div className="app-layout">
             <Navbar
@@ -150,6 +162,7 @@ export default function App() {
                 theme={theme}
                 onToggleTheme={handleToggleTheme}
                 onOpenModal={handleOpenModal}
+                onSendEmail={handleSendEmail}
             />
 
             <main className="main-content">

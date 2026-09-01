@@ -122,3 +122,71 @@ export function getMorningEveningStats(records) {
     };
 }
 
+export function generateEmailReport(records, settings) {
+    if (!records || records.length === 0) {
+        return {
+            subject: 'HealthSync Arztbericht',
+            body: 'Keine Messdaten vorhanden.'
+        };
+    }
+
+    const nameStr = settings?.name ? ` für ${settings.name}` : '';
+    const subject = `HealthSync Arztbericht${nameStr} (${new Date().toLocaleDateString('de-DE')})`;
+
+    // Latest individual records
+    const latestBP = records.find(r => r.systolic !== null && r.diastolic !== null);
+    const latestPulse = records.find(r => r.pulse !== null);
+    const latestWeight = records.find(r => r.weight !== null);
+
+    const bpClass = latestBP ? getBPClassification(latestBP.systolic, latestBP.diastolic) : null;
+    const bmiVal = latestWeight && settings?.height ? calculateBMI(latestWeight.weight, settings.height) : null;
+    const bmiClass = bmiVal ? getBMIClassification(bmiVal) : null;
+
+    // Averages (overall and morning/evening)
+    const bpRecs = records.filter(r => r.systolic !== null && r.diastolic !== null);
+    const avgSys = bpRecs.length > 0 ? Math.round(bpRecs.reduce((sum, r) => sum + r.systolic, 0) / bpRecs.length) : null;
+    const avgDia = bpRecs.length > 0 ? Math.round(bpRecs.reduce((sum, r) => sum + r.diastolic, 0) / bpRecs.length) : null;
+
+    const meStats = getMorningEveningStats(records);
+
+    let body = `Hallo,\n\nanbei sende ich meine aktuellen Gesundheitsdaten aus der HealthSync App:\n\n`;
+
+    if (settings?.name) {
+        body += `Patient: ${settings.name}\n`;
+    }
+    if (settings?.height) {
+        body += `Körpergröße: ${settings.height} cm\n`;
+    }
+    body += `Erstellt am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
+
+    body += `--- LETZTE MESSWERTE ---\n`;
+    if (latestBP) {
+        body += `• Blutdruck: ${latestBP.systolic}/${latestBP.diastolic} mmHg (${bpClass ? bpClass.label : ''})\n`;
+    }
+    if (latestPulse) {
+        body += `• Puls: ${latestPulse.pulse} bpm\n`;
+    }
+    if (latestWeight) {
+        body += `• Gewicht: ${latestWeight.weight.toFixed(1)} kg${bmiVal ? ` (BMI: ${bmiVal} - ${bmiClass.label})` : ''}\n`;
+    }
+    body += `\n`;
+
+    body += `--- DURCHSCHNITTSWERTE (Ø) ---\n`;
+    if (avgSys && avgDia) {
+        body += `• Blutdruck gesamt: ${avgSys}/${avgDia} mmHg (${bpRecs.length} Messungen)\n`;
+    }
+    if (meStats.morning.avgSys) {
+        body += `• Ø Morgens (04-12 Uhr): ${meStats.morning.avgSys}/${meStats.morning.avgDia} mmHg (Puls: ${meStats.morning.avgPulse || '--'} bpm)\n`;
+    }
+    if (meStats.evening.avgSys) {
+        body += `• Ø Abends (17-24 Uhr): ${meStats.evening.avgSys}/${meStats.evening.avgDia} mmHg (Puls: ${meStats.evening.avgPulse || '--'} bpm)\n`;
+    }
+    body += `\n`;
+
+    body += `Hinweis: Der vollständige PDF-Bericht (mit Diagrammen und Detailtabelle) kann bei Bedarf als Anhang beigefügt werden.\n\n`;
+    body += `Viele Grüße,\n${settings?.name || ''}`;
+
+    return { subject, body };
+}
+
+

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus, Menu, X, Printer } from 'lucide-react';
+import { Activity, LayoutDashboard, Calendar, Settings, Sun, Moon, Plus, Menu, X, Printer, Mail } from 'lucide-react';
 
-export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, onOpenModal }) {
+export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, onOpenModal, onSendEmail }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleTabClick = (tab) => {
@@ -82,6 +82,10 @@ export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, o
                 <button className="btn-secondary no-print" onClick={() => { setIsMobileMenuOpen(false); window.print(); }} title="Arztbericht drucken">
                     <Printer size={18} />
                     <span>Arztbericht (PDF)</span>
+                </button>
+                <button className="btn-secondary no-print" onClick={() => { setIsMobileMenuOpen(false); onSendEmail(); }} title="Bericht per E-Mail vorbereiten">
+                    <Mail size={18} />
+                    <span>E-Mail</span>
                 </button>
                 <button className="btn-primary" onClick={handleOpenModalClick}>
                     <Plus size={18} />
