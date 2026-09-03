@@ -1232,6 +1232,18 @@ tr:hover td {
     }
 }
 
+/* Zwischen 769px und 1024px: Nur Icons der Menü-Buttons anzeigen, ab 1025px auch die Labels */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .nav-menu .nav-link {
+        padding: 0.6rem 0.75rem;
+        gap: 0;
+    }
+
+    .nav-menu .nav-link span {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
