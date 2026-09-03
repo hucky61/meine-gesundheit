@@ -68,25 +68,37 @@ export default function Navbar({ activeTab, onTabChange, theme, onToggleTheme, o
                     <Settings size={18} />
                     <span>Einstellungen</span>
                 </button>
-            </nav>
 
-            <div className={`nav-actions ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+                <div className="nav-divider no-print" />
+
                 <button
-                    id="theme-toggle"
-                    className="btn-icon theme-toggle-desktop"
-                    onClick={onToggleTheme}
-                    title="Design umschalten"
+                    className="nav-link no-print"
+                    onClick={() => { setIsMobileMenuOpen(false); window.print(); }}
+                    title="Arztbericht drucken oder speichern"
                 >
-                    {theme === 'light' ? <Sun size={18} /> : <Moon size={18} />}
-                </button>
-                <button className="btn-secondary no-print" onClick={() => { setIsMobileMenuOpen(false); window.print(); }} title="Arztbericht drucken">
                     <Printer size={18} />
-                    <span>Arztbericht (PDF)</span>
+                    <span>Arztbericht</span>
                 </button>
-                <button className="btn-secondary no-print" onClick={() => { setIsMobileMenuOpen(false); onSendEmail(); }} title="Bericht per E-Mail vorbereiten">
+                <button
+                    className="nav-link no-print"
+                    onClick={() => { setIsMobileMenuOpen(false); onSendEmail(); }}
+                    title="Bericht per E-Mail vorbereiten & senden"
+                >
                     <Mail size={18} />
                     <span>E-Mail</span>
                 </button>
+                <button
+                    id="theme-toggle"
+                    className="nav-link no-print"
+                    onClick={() => { setIsMobileMenuOpen(false); onToggleTheme(); }}
+                    title="Design umschalten (Tag/Nacht)"
+                >
+                    {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                    <span>{theme === 'light' ? 'Nacht' : 'Tag'}</span>
+                </button>
+            </nav>
+
+            <div className={`nav-actions ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                 <button className="btn-primary" onClick={handleOpenModalClick}>
                     <Plus size={18} />
                     <span>Neuer Eintrag</span>
