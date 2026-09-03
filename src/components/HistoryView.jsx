@@ -116,7 +116,7 @@ export default function HistoryView({ records, settings, onEditRecord, onDeleteR
                                                 {r.systolic && r.diastolic ? (
                                                     <div>
                                                         <span className={`table-val-pill ${bpClass ? bpClass.class : ''}`}>
-                                                            {r.systolic} / {r.diastolic}
+                                                            {r.systolic}/{r.diastolic}
                                                         </span>
                                                         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                                                             PP: {calculatePulsdruck(r.systolic, r.diastolic)} | MAP: {calculateMAP(r.systolic, r.diastolic)}

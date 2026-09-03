@@ -383,7 +383,7 @@ export default function DashboardView({ records, settings, onSelectTab, active }
                                         <Sun size={12} /> Morgens
                                     </span>
                                     <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '0.15rem' }}>
-                                        {meStats.morning.avgSys ? `${meStats.morning.avgSys}/${meStats.morning.avgDia}` : '-- / --'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
+                                        {meStats.morning.avgSys ? `${meStats.morning.avgSys}/${meStats.morning.avgDia}` : '--/--'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
                                     </strong>
                                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                         Puls: {meStats.morning.avgPulse ? `${meStats.morning.avgPulse} bpm` : '--'}
@@ -394,7 +394,7 @@ export default function DashboardView({ records, settings, onSelectTab, active }
                                         <Moon size={12} /> Abends
                                     </span>
                                     <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '0.15rem' }}>
-                                        {meStats.evening.avgSys ? `${meStats.evening.avgSys}/${meStats.evening.avgDia}` : '-- / --'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
+                                        {meStats.evening.avgSys ? `${meStats.evening.avgSys}/${meStats.evening.avgDia}` : '--/--'} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>mmHg</span>
                                     </strong>
                                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                         Puls: {meStats.evening.avgPulse ? `${meStats.evening.avgPulse} bpm` : '--'}
