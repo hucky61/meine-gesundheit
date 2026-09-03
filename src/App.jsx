@@ -143,15 +143,68 @@ export default function App() {
         }
     };
 
-    const handleSendEmail = () => {
+    const handleSendEmail = async () => {
         if (records.length === 0) {
             showToast('Keine Daten zum Versenden vorhanden.', 'error');
             return;
         }
+
         const { subject, body } = generateEmailReport(records, settings);
-        const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoUrl;
-        showToast('E-Mail-Entwurf wird geöffnet...', 'info');
+        showToast('PDF-Arztbericht wird erstellt...', 'info');
+
+        try {
+            const element = document.querySelector('.main-content') || document.body;
+            const filename = `Arztbericht_${settings?.name ? settings.name.replace(/\s+/g, '_') : 'Gesundheit'}_${new Date().toISOString().slice(0, 10)}.pdf`;
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            const html2pdfModule = (await import('html2pdf.js')).default;
+            const pdfWorker = html2pdfModule().set(opt).from(element);
+
+            // Check if Web Share API with files support is available (e.g. mobile Safari / Chrome)
+            const pdfBlob = await pdfWorker.output('blob');
+            const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+            if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                try {
+                    await navigator.share({
+                        title: subject,
+                        text: body,
+                        files: [pdfFile]
+                    });
+                    showToast('Arztbericht inklusive PDF erfolgreich geteilt!', 'success');
+                    return;
+                } catch (shareErr) {
+                    if (shareErr.name !== 'AbortError') {
+                        console.warn('Share error:', shareErr);
+                    }
+                }
+            }
+
+            // Fallback for Desktop & Browsers without Web Share file support:
+            // 1. Download PDF file automatically
+            pdfWorker.save();
+
+            // 2. Open E-Mail client via mailto
+            setTimeout(() => {
+                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = mailtoUrl;
+            }, 500);
+
+            showToast('PDF heruntergeladen & E-Mail-Entwurf geöffnet! Bitte PDF anhängen.', 'success');
+        } catch (err) {
+            console.error('PDF Generation Error:', err);
+            // Fallback to mailto link
+            const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+            showToast('E-Mail-Entwurf geöffnet.', 'info');
+        }
     };
 
     return (
